@@ -43,5 +43,12 @@
 #define TRANSACTION_DB "transaction_logs.txt"
 #define ADMIN_DB "admin.txt"
 #define LOAN_DB "loan.txt"
+#define FEEDBACK_DB "feedback.txt"
+
+#define CUSTOMER_COUNTER "cid.txt"
+#define TRANSACTION_COUNTER "tid.txt"
+#define EMPLOYEE_COUNTER "eid.txt"
+#define LOAN_COUNTER "lid.txt"
+#define FEEDBACK_COUNTER "fid.txt"
 
 #endif 

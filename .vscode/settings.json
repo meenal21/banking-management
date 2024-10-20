@@ -3,6 +3,7 @@
         "customer_struct.h": "c",
         "commonheader.h": "c",
         "employee_struct.h": "c",
-        "placeholder.h": "c"
+        "placeholder.h": "c",
+        "admin.h": "c"
     }
 }
