@@ -1,6 +1,19 @@
 #include "commonheader.h"
+#include "customer.h"
+#include "placeholder.h"
+#include "employee.h"
+#include "admin.h"
 
-int login(const char *username, const char *password){
 
-    if(strcmp(username, "admin") == 0 && strcmp(password,""))
+
+
+
+
+
+
+int main(){
+    int result;
+    result = login_customer(2);
+    printf("%d \n", result);
+    
 }

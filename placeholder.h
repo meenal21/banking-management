@@ -22,6 +22,21 @@
 #define OPENING_LOAN_FAILED "!!!----- Unable to open the loan database -----!!!"
 #define LSEEK_FAILED "!!!----- Lseek Failed -----!!!"
 #define MODIFY_FAILED "!!!----- Modify Failed -----!!!"
+#define USER_NOT_FOUND "!!!----- User not found ----- !!!"
+#define USER_NOT_ACTIVE "!!!----- User not active ----- !!!"
+#define USER_ALREADY_LOGGED_IN "!!!----- User already logged in ----- !!!"
+#define UNABLE_TO_LOGIN "!!!----- Unable to Login ----- !!!"
+#define UNABLE_TO_LOGOUT "!!!----- Unable to Logout ----- !!!"
+#define UNABLE_TO_READ_ADMIN "!!!----- Unable to read admin db ----- !!!"
+#define ADMIN_CREATION_FAILED "!!!----- Unable to create the admin -----!!!"
+#define USER_ALREADY_ACTIVE "!!!----- User is already active -----!!!"
+#define USER_ALREADY_INACTIVE "!!!----- User is already inactive -----!!!"
+#define USER_ACTIVATED "!!!----- User activated-----!!!"
+#define USER_DEACTIVATED "!!!----- User deactivated -----!!!"
+#define UNABLE_TO_ACTIVATE "!!!----- Unable to activate the user ----- !!!"
+#define UNABLE_TO_DEACTIVATE "!!!----- Unable to deactivate the user ----- !!!"
+
+
 
 #define EMPLOYEE_DB "employee.txt"
 #define CUSTOMER_DB "customer.txt"

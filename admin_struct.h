@@ -2,7 +2,7 @@
 #define ADMIN_STRUCT_H
 
 struct Admin{
-    bool login;
+    bool loggedin;
     char password[20];
 };
 

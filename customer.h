@@ -34,6 +34,10 @@ int create_customer(){
     printf("Name: ");
     fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.name,message);
+
+    printf("Email: ");
+    fgets(message, BUFFER_SIZE, stdin);
+    strcpy(cust.emailid,message);
     
     printf("DOB: ");
 	fgets(message, BUFFER_SIZE, stdin);
@@ -61,6 +65,9 @@ int create_customer(){
 
 
     //printf("%d\n",id);
+    char pass[50];
+    snprintf(pass, sizeof(pass), "cid@%s", cust.emailid); 
+    strcpy(cust.password,pass);
     cust.cid = id;
     
     cust.active = true;
@@ -126,6 +133,108 @@ int modify_customer(struct Customer cust, off_t offset, int cid){
         perror(MODIFY_FAILED);
         return -1;
     }
+    return 1;
+}
+
+int login_customer(int userid){
+    struct Customer cust;
+    off_t offset;
+    offset = read_customer(&cust, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+    // check if active
+    if(cust.active != true){
+        printf(USER_NOT_ACTIVE);
+        return -1;
+    }
+
+    // check if logged in
+    if(cust.loggedin != false){
+        printf(USER_ALREADY_LOGGED_IN);
+        return -1;
+    }
+
+    cust.loggedin = true;
+    if(modify_customer(cust, offset, userid) == -1){
+        printf(UNABLE_TO_LOGIN);
+        return -1;
+    }
+
+    printf("Logged in!");
+    return 1;
+
+}
+
+int logout_customer(int userid){
+    struct Customer cust;
+    off_t offset;
+    offset = read_customer(&cust, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+
+    cust.loggedin = false;
+    if(modify_customer(cust, offset, userid) == -1){
+        printf(UNABLE_TO_LOGIN);
+        return -1;
+    }
+
+    printf("Logged out!");
+    return 1;
+
+}
+
+int deactivate_customer(int userid){
+    struct Customer cust;
+    off_t offset;
+    offset = read_customer(&cust, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+    // check if active
+    if(cust.active != true){
+        printf(USER_ALREADY_INACTIVE);
+        return -1;
+    }
+
+    
+    cust.active = false;
+    if(modify_customer(cust, offset, userid) == -1){
+        printf(UNABLE_TO_DEACTIVATE);
+        return -1;
+    }
+
+    printf(USER_DEACTIVATED);
+    return 1;
+
+}
+
+int activate_customer(int userid){
+    struct Customer cust;
+    off_t offset;
+    offset = read_customer(&cust, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+    // check if active
+    if(cust.active != false){
+        printf(USER_ALREADY_ACTIVE);
+        return -1;
+    }
+
+    
+    cust.loggedin = true;
+    if(modify_customer(cust, offset, userid) == -1){
+        printf(UNABLE_TO_ACTIVATE);
+        return -1;
+    }
+
+    printf(USER_ACTIVATED);
     return 1;
 }
 

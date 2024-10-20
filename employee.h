@@ -34,6 +34,10 @@ int create_employee(){
     fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.name,message);
     
+    printf("Email: ");
+    fgets(message, BUFFER_SIZE, stdin);
+    strcpy(emp.emailid,message);
+    
     printf("DOB: ");
     fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.dob,message);
@@ -54,8 +58,10 @@ int create_employee(){
     fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.idnumber,message);
 
-    
-    emp.eid = id;
+    char pass[50];
+    snprintf(pass, sizeof(pass), "eid@%s", emp.emailid); 
+    strcpy(emp.password,pass);
+
     emp.eid = id;
     emp.manager = false;
     emp.active = true;
@@ -78,7 +84,7 @@ int read_employee(struct Employee *emp, int eid) {
     struct Employee temp;
     ssize_t bytes_read;
 
-    if ((fd = open("employee.txt", O_RDONLY)) < 0) {
+    if ((fd = open(EMPLOYEE_DB, O_RDONLY)) < 0) {
         perror("Error opening the file");
         return -1; // Return an empty struct
     }
@@ -120,6 +126,57 @@ int modify_employee(struct Employee emp, off_t offset, int eid){
         return -1;
     }
     return 1;
+}
+
+int login_employee(int userid){
+    struct Employee emp;
+    off_t offset;
+    offset = read_employee(&emp, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+    // check if active
+    if(emp.active != true){
+        printf(USER_NOT_ACTIVE);
+        return -1;
+    }
+
+    // check if logged in
+    if(emp.loggedin != false){
+        printf(USER_ALREADY_LOGGED_IN);
+        return -1;
+    }
+
+    emp.loggedin = true;
+    if(modify_employee(emp, offset, userid) == -1){
+        printf(UNABLE_TO_LOGIN);
+        return -1;
+    }
+
+    printf("Logged in!");
+    return 1;
+
+}
+
+int logout_employee(int userid){
+    struct Employee emp;
+    off_t offset;
+    offset = read_employee(&emp, userid);
+    if(offset == -1){
+            perror(USER_NOT_FOUND);
+            return -1;
+    }
+
+    emp.loggedin = false;
+    if(modify_employee(emp, offset, userid) == -1){
+        printf(UNABLE_TO_LOGOUT);
+        return -1;
+    }
+
+    printf("Logged out!");
+    return 1;
+
 }
 
 #endif
