@@ -27,71 +27,42 @@ int create_customer(){
     if(id < 0){
         perror("Customer Id couldn't be added");
     }
+    printf("%d \n", id);
 
     printf("Enter customer details: \n");
     
     printf("Name: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.name,message);
     
     printf("DOB: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+	fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.dob,message);
     
     printf("Ph. Number: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+	fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.number,message);
 
     printf("Address: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+	fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.address,message);
 
     printf("Document Type: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+	fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.iddoc,message);
 
     printf("ID Number: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
+	fgets(message, BUFFER_SIZE, stdin);
     strcpy(cust.idnumber,message);
 
     printf("Balance: ");
-    //do{
-		fgets(message, BUFFER_SIZE, stdin);
-	//	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	//}while(strlen(message)==0);
-    strcpy(cust.idnumber,message);
+	fgets(message, BUFFER_SIZE, stdin);
     cust.balance = atoi(message);
 
 
     //printf("%d\n",id);
     cust.cid = id;
-    /*
-    strcpy(cust.name,"Meenal Jain");
-    strcpy(cust.dob, "21/11/1996");
-    strcpy(cust.number,"9370713266");
-    strcpy(cust.address,"Surat, Gujarat");
-    strcpy(cust.iddoc,"PAN");
-    strcpy(cust.idnumber,"BDIPJ0987");
-    cust.balance = 12345;
-    */
+    
     cust.active = true;
     cust.loggedin = false;
     
@@ -107,8 +78,9 @@ int create_customer(){
     return id;
 }
 
-int read_customer(struct Customer * cust, int cid) {
+off_t read_customer(struct Customer * cust, int cid) {
     int fd;
+    off_t offset;
     struct Customer temp_cust;
     ssize_t bytes_read;
 
@@ -118,10 +90,12 @@ int read_customer(struct Customer * cust, int cid) {
     }
 
     while ((bytes_read = read(fd, &temp_cust, sizeof(struct Customer))) > 0){
+        //printf("%s %d", temp_cust.name, temp_cust.cid);
         if (temp_cust.cid == cid) {
+            offset = lseek(fd, -1 * sizeof(struct Customer), SEEK_CUR);
             close(fd);
             *cust = temp_cust;
-            return 1; // Return the found customer
+            return offset; // Return the found customer
         }
     }
 
@@ -132,4 +106,27 @@ int read_customer(struct Customer * cust, int cid) {
     close(fd);
     return -1; // Return an empty struct if not found
 }
+
+int modify_customer(struct Customer cust, off_t offset, int cid){
+    int fd;
+    ssize_t bytes_writ;
+    fd = open(CUSTOMER_DB, O_RDWR, 0644);
+    if(fd < 0){
+        perror(OPENING_CUSTOMER_FAILED);
+        return -1;
+    }   
+
+    if(lseek(fd, offset, SEEK_SET) < 0) {
+        perror(LSEEK_FAILED);
+        return -1;
+    }
+    
+    bytes_writ = write(fd, &cust, sizeof(struct Customer));
+    if(bytes_writ < 0){
+        perror(MODIFY_FAILED);
+        return -1;
+    }
+    return 1;
+}
+
 #endif 

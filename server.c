@@ -2,9 +2,40 @@
 #include <strings.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include "placeholder.h"
+#include "readwrite.h"
 
 #define PORT 8080
 #define BUFFER_SIZE 1024
+
+void connection_handler(int connection_fd){
+	while(1){
+				
+				char read_buf[BUFFER_SIZE];
+				if(readwrite(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)){
+					int choice;
+					choice = atoi(read_buf);
+					printf("%d \n",choice);
+
+					switch(choice){
+						case 1: printf("Customer \n");
+								break;
+						case 2: printf("Employee \n");
+								break;
+						case 3: printf("Manager \n");
+								break;
+						case 4: printf("Admin \n");
+								break;
+						case 5: printf("Exit \n");
+								break;
+						default: printf("Invalid Choice \n");
+					}
+				}
+				else{
+					printf("%s \n", read_buf);
+				}
+	}
+}
 
 int main() {
 
@@ -58,21 +89,10 @@ int main() {
 			//Child Process
 			close(server_fd);
 
+			
 			//communication with the client - infinite loop here
-			while(1){
-				int bytes_read = recv(new_socket, buffer, BUFFER_SIZE, 0);
-				if(bytes_read <= 0){
-					printf("Client Disconnected.\n");
-					break;
-				}
-				// adding null character that acts as a null terminated string
-				buffer[bytes_read] ='\0';
-				printf("Client: %s\n", buffer);
+			connection_handler(new_socket);
 
-				//echo the message back to the client
-				send(new_socket, buffer, strlen(buffer),0);
-				bzero(buffer, BUFFER_SIZE);
-			}
 			close(new_socket);
 			exit(0);
 		}

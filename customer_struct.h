@@ -4,6 +4,8 @@
 struct Customer{
 
 	int cid;
+	char emailid[30];
+	char password[15];
 	char name[30];
 	char dob[10];
 	char number[10];

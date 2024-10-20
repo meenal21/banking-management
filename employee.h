@@ -13,15 +13,15 @@ int create_employee(){
     ssize_t bytes_writ;
     char buffer[BUFFER_SIZE];
     char message[BUFFER_SIZE];
-    const char *filename = "employee.txt";
+    const char *filename = EMPLOYEE_DB;
 
     fd = open(filename, O_RDWR | O_CREAT | O_APPEND, 0777); // Use O_APPEND to append to the file
     if (fd < 0) {
-        perror("Error opening file");
+        perror(OPENING_EMPLOYEE_FAILED);
         return -1;
     }
 
-    id = getcounter("eid.txt", "Employee");
+    id = getcounter(EMPLOYEE_DB, "Employee");
     if (id < 0) {
         perror("Employee Id couldn't be added");
         close(fd);
@@ -31,58 +31,31 @@ int create_employee(){
     printf("Enter Employee details: \n");
     
     printf("Name: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.name,message);
     
     printf("DOB: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.dob,message);
     
     printf("Ph. Number: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.number,message);
 
     printf("Address: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.address,message);
 
     printf("Document Type: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.iddoc,message);
 
     printf("ID Number: ");
-    // do{
-		fgets(message, BUFFER_SIZE, stdin);
-		// message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// }while(strlen(message)==0);
+    fgets(message, BUFFER_SIZE, stdin);
     strcpy(emp.idnumber,message);
 
-    //printf("%d\n",id);
+    
     emp.eid = id;
-    /*
-    strcpy(cust.name,"Meenal Jain");
-    strcpy(cust.dob, "21/11/1996");
-    strcpy(cust.number,"9370713266");
-    strcpy(cust.address,"Surat, Gujarat");
-    strcpy(cust.iddoc,"PAN");
-    strcpy(cust.idnumber,"BDIPJ0987");
-    cust.balance = 12345;
-    */
     emp.eid = id;
     emp.manager = false;
     emp.active = true;
@@ -125,6 +98,28 @@ int read_employee(struct Employee *emp, int eid) {
 
     close(fd);
     return -1; // Return an empty struct if not found
+}
+
+int modify_employee(struct Employee emp, off_t offset, int eid){
+    int fd;
+    ssize_t bytes_writ;
+    fd = open(EMPLOYEE_DB, O_RDWR, 0644);
+    if(fd < 0){
+        perror(OPENING_EMPLOYEE_FAILED);
+        return -1;
+    }   
+
+    if(lseek(fd, offset, SEEK_SET) < 0) {
+        perror(LSEEK_FAILED);
+        return -1;
+    }
+    
+    bytes_writ = write(fd, &emp, sizeof(struct Employee));
+    if(bytes_writ < 0){
+        perror(MODIFY_FAILED);
+        return -1;
+    }
+    return 1;
 }
 
 #endif

@@ -7,7 +7,8 @@ bool initialize(){
 
     const char *cid = "cid.txt";
     const char *eid = "eid.txt";
-    int fd1, fd2;
+    const char *tid = "tid.txt";
+    int fd1, fd2, fd3;
     ssize_t bytes_writ;
 
     if((fd1 = open(cid, O_WRONLY | O_CREAT ,0644)) < 0){
@@ -19,24 +20,39 @@ bool initialize(){
         return false;
     }
 
+    if((fd3 = open(tid, O_WRONLY | O_CREAT ,0644)) < 0){
+        perror("Error opening TID");
+        return false;
+    }
     int counter = 0;
 
     if((bytes_writ = write(fd1, &counter, sizeof(int))) < bytes_writ){
         perror("Error writing to CID");
         close(fd1);
         close(fd2);
+        close(fd3);
         return false;
     }
     if((bytes_writ = write(fd2, &counter, sizeof(int))) < bytes_writ){
         perror("Error writing to EID");
         close(fd1);
         close(fd2);
+        close(fd3);
         return false;
     }
 
-    printf("Initialised the CID, EID\n");
+    if((bytes_writ = write(fd3,  &counter, sizeof(int))) < bytes_writ){
+        perror("Error writing to TID");
+        close(fd1);
+        close(fd2);
+        close(fd3);
+        return false;
+    }
+
+    printf("Initialised the CID, EID, TID\n");
     close(fd1);
     close(fd2);
+    close(fd3);
     return true;
 }
 

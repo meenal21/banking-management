@@ -11,7 +11,7 @@ int getcounter(char const *file, char const *usertype){
     
     fd = open(file, O_RDWR , 0777);
     if(fd < 0){
-        perror("Error opening cid");
+        perror("Error opening file");
         return -1;
     }
 
@@ -21,7 +21,8 @@ int getcounter(char const *file, char const *usertype){
     id += 1;
     printf("%d\n",id);
     lseek(fd, 0, SEEK_SET);
-    if((bytes_count= write(fd, &id, sizeof(int))) < bytes_count){
+    bytes_count= write(fd, &id, sizeof(int));
+    if(bytes_count < 0){
         perror("Incrementing counter for file failed");
         close(fd);
         return -1;

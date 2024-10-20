@@ -4,11 +4,10 @@
 
 int main(){
 
-    printf("Hello1\n");
-
     int fd;
-    int eid = 27;
+    int eid = 26;
     struct Employee emp;
+    struct Employee temp_emp;
     ssize_t bytes_read;
 
     //Open the file
@@ -16,23 +15,21 @@ int main(){
         perror("Error opening the file");
         return -1;
     }
-    printf("Hello\n");
 
-    while((bytes_read = read(fd, &emp, sizeof(struct Employee))) != 0){
-        printf("Read Bytes: %d",emp.eid );
-        if(emp.eid == eid){ 
-            printf("%d %d %s", emp.eid, eid, emp.name);
+    while((bytes_read = read(fd, &temp_emp, sizeof(struct Employee))) > 0){
+        if(temp_emp.eid == eid){ 
+            printf("This is the employee name: %s", temp_emp.name);
             fflush(stdout);
             close(fd);
+            emp = temp_emp;
             return eid;
         }
     }
 
     if(bytes_read < 0){
-        printf("Couldnt read?");
+        printf("Couldn't read?");
     }
 
-    printf("Out of the loop\n");
     close(fd);
     return 1;
     //Read the file

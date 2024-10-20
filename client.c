@@ -39,33 +39,37 @@ int main(){
 	//Step 4: Communicate with the server
 	
 	while(1){
-		printf("Enter message that needs to be sent!\n");
+
+		// first read from the server
+		int bytes_read;
+		bytes_read = recv(sock, buffer, BUF_SIZE, 0);
+		if(bytes_read <= 0){
+			printf("Server has closed the connection. \n");
+			break;
+		}
+
+
+		buffer[bytes_read] = '\0';
+		printf("%s\n", buffer);
+		bzero(buffer,BUF_SIZE);
 		
+		//get input from the user
 		do{
 			fgets(message, BUF_SIZE, stdin);
 			message[strcspn(message, "\n")] = '\0'; // removing new line character
 		}while(strlen(message)==0);
 		
-
-		
 		//Send the message to the server
 		send(sock, message, strlen(message),0);
 
 		//check if the user has exited!
+		/*
 		if(strcmp(message, "exit")==0){
 			printf("Disconnected from the server\n");
 			break;
 		}
-
-		//receive the server's response
-		int bytes_read = recv(sock, buffer, BUF_SIZE, 0);
-		if(bytes_read <= 0){
-			printf("Server has closed the connection. \n");
-			break;
-		}
-		buffer[bytes_read] = '\0';
-		printf("Server: %s\n", buffer);
-		bzero(buffer,BUF_SIZE);
+		*/
+	
 	}
 	
 	close(sock);
