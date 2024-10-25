@@ -50,5 +50,6 @@
 #define EMPLOYEE_COUNTER "eid.txt"
 #define LOAN_COUNTER "lid.txt"
 #define FEEDBACK_COUNTER "fid.txt"
+#define MANAGER_COUNTER "mid.txt"
 
 #endif 

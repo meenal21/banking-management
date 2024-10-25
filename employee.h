@@ -21,7 +21,7 @@ int create_employee(){
         return -1;
     }
 
-    id = getcounter(EMPLOYEE_DB, "Employee");
+    id = getcounter(EMPLOYEE_COUNTER, "Employee");
     if (id < 0) {
         perror("Employee Id couldn't be added");
         close(fd);
@@ -83,7 +83,7 @@ int read_employee(struct Employee *emp, int eid) {
     int fd;
     struct Employee temp;
     ssize_t bytes_read;
-
+    off_t offset;
     if ((fd = open(EMPLOYEE_DB, O_RDONLY)) < 0) {
         perror("Error opening the file");
         return -1; // Return an empty struct
@@ -92,9 +92,10 @@ int read_employee(struct Employee *emp, int eid) {
     while ((bytes_read = read(fd, &temp, sizeof(struct Employee))) > 0){
         if (temp.eid == eid) {
             //printf("Found Employee: %d, Name: %s\n", emp.eid, emp.name);
+            offset = lseek(fd, -1 * sizeof(struct Employee), SEEK_CUR);
             close(fd);
             *emp = temp;
-            return 1; // Return the found employee
+            return offset; // Return the found employee
         }
     }
 
@@ -109,7 +110,7 @@ int read_employee(struct Employee *emp, int eid) {
 int modify_employee(struct Employee emp, off_t offset, int eid){
     int fd;
     ssize_t bytes_writ;
-    fd = open(EMPLOYEE_DB, O_RDWR, 0644);
+    fd = open(EMPLOYEE_DB, O_RDWR, 0777);
     if(fd < 0){
         perror(OPENING_EMPLOYEE_FAILED);
         return -1;
@@ -178,5 +179,34 @@ int logout_employee(int userid){
     return 1;
 
 }
+
+int read_feedback(){
+    int fd;
+    struct Feedback fb;
+    char buffer[BUFFER_SIZE];
+    char const *filename = FEEDBACK_DB;
+    ssize_t bytes_read;
+
+    fd = open(filename, O_RDONLY | O_CREAT | O_APPEND, 0777);
+    if(fd < 0){
+        perror("Error opening file");
+        return -1;
+    }
+
+    while ((bytes_read = read(fd, &fb, sizeof(struct Feedback))) > 0){
+            printf("%s \n",fb.feedback);
+    }
+
+    close(fd);
+
+    if (bytes_read < 0) {
+        perror("Could not read");
+        return -1;
+    }
+
+    return 1; 
+
+}
+
 
 #endif

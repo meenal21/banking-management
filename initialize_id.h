@@ -11,8 +11,9 @@ bool initialize(){
     const char *tid = TRANSACTION_COUNTER;
     const char *fid = FEEDBACK_COUNTER;
     const char *lid = LOAN_COUNTER;
+    const char *mid = MANAGER_COUNTER;
 
-    int fd1, fd2, fd3, fd4, fd5;
+    int fd1, fd2, fd3, fd4, fd5, fd6;
     ssize_t bytes_writ;
 
     if((fd1 = open(cid, O_WRONLY | O_CREAT ,0644)) < 0){
@@ -89,11 +90,24 @@ bool initialize(){
         return false;
     }
 
+    if((fd6 = open(mid, O_WRONLY | O_CREAT ,0644)) < 0){
+        perror("Error opening MID");
+        return false;
+    }
+
+    if((bytes_writ = write(fd6,  &counter, sizeof(int))) < bytes_writ){
+        perror("Error writing to MID");
+        close(fd6);
+        return false;
+    }
+
     printf("Initialised the CID, EID, TID, FID, LID\n");
     close(fd1);
     close(fd2);
     close(fd3);
     close(fd4);
+    close(fd5);
+    close(fd6);
     return true;
 }
 

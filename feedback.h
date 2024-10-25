@@ -1,40 +1,9 @@
+#ifndef FEEDBACK_H
+#define FEEDBACK_H
 #include "commonheader.h"
-#include "customer.h"
-#include "placeholder.h"
-#include "employee.h"
-#include "admin.h"
-#include "feedback_struct.h"
+#include "getcounter.h"
+#include "readwrite.h"
 
-int read_feedback(){
-    int fd;
-    struct Feedback fb;
-    char buffer[BUFFER_SIZE];
-    char const *filename = FEEDBACK_DB;
-    ssize_t bytes_read;
-
-    fflush(stdout);
-    fflush(stdin);
-
-    fd = open(filename, O_RDONLY | O_CREAT, 0777);
-    if(fd < 0){
-        perror("Error opening file");
-        return -1;
-    }
-
-    while ((bytes_read = read(fd, &fb, sizeof(struct Feedback))) > 0){
-        printf("%s \n",fb.feedback);
-    }
-
-    close(fd);
-
-    if (bytes_read < 0) {
-        perror("Could not read");
-        return -1;
-    }
-
-    return 1; 
-
-}
 
 int give_feedback(int userid){
 
@@ -76,15 +45,33 @@ int give_feedback(int userid){
     close(fd);
 
     return 1;
-
 }
 
-int main(){
-    int result;
-    int userid = 1;
-    result = give_feedback(userid);
-    printf("%d \n", result);
-    read_feedback();
-    return 0;
+int read_feedback(){
+    int fd;
+    struct Feedback fb;
+    char buffer[BUFFER_SIZE];
+    char const *filename = FEEDBACK_DB;
+    ssize_t bytes_read;
 
+    fd = open(filename, O_RDONLY | O_CREAT | O_APPEND, 0777);
+    if(fd < 0){
+        perror("Error opening file");
+        return -1;
+    }
+
+    while ((bytes_read = read(fd, &fb, sizeof(struct Feedback))) > 0){
+            printf("%s \n",fb.feedback);
+    }
+
+    close(fd);
+
+    if (bytes_read < 0) {
+        perror("Could not read");
+        return -1;
+    }
+
+    return 1; 
 }
+
+#endif
