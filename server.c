@@ -4,8 +4,10 @@
 #include <sys/socket.h>
 #include "placeholder.h"
 #include "readwrite.h"
+#include "common_functions.h"
+#include "admin.h"
 
-#define PORT 8080
+#define PORT 8083
 #define BUFFER_SIZE 1024
 
 void connection_handler(int connection_fd){
@@ -24,7 +26,12 @@ void connection_handler(int connection_fd){
 								break;
 						case 3: printf("Manager \n");
 								break;
-						case 4: printf("Admin \n");
+						case 4: write_client(connection_fd, sizeof("Admin *"), "Admin *");
+								if(login_admin(connection_fd) == 1){
+									printf("Admin  inside\n");		
+								}
+								logout_admin(connection_fd);
+								//admin_controller(connection_fd);
 								break;
 						case 5: printf("Exit \n");
 								break;

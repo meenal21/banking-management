@@ -2,6 +2,7 @@
 #define COMMON_FUNCTIONS_H
 
 #include "commonheader.h"
+#include "readwrite.h"
 
 int get_count(const char *file){
     int fd;
@@ -28,22 +29,21 @@ int random_number(const char *file){
     return randomNum;
 }
 
-int check_password(char *pass){
+int check_password(int sfd, char *pass){
+    
     printf("%s\n", pass);
     char message[BUFFER_SIZE];
-    
-    printf("Enter Password: ");
-    fgets(message, BUFFER_SIZE, stdin);
+    char *stri = LOGIN_PASSWORD;
+
+    readwrite(sfd, sizeof(LOGIN_PASSWORD), LOGIN_PASSWORD, BUFFER_SIZE, message);
+    // fgets(message, BUFFER_SIZE, stdin);
     message[strcspn(message, "\n")] = 0;
     pass[strcspn(pass, "\n")] = 0;
 
-    int cmp;
-    cmp = strcmp(message, pass);
-    printf("%d\n", cmp);
-    printf("%s\n", message);
+    int cmp = strcmp(message, pass);
 
     if(cmp != 0){
-        printf(INVALID_CREDENTIALS);
+        perror("Invalid Credentials");
         return -1;
     }
 
