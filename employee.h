@@ -129,10 +129,10 @@ int modify_employee(struct Employee emp, off_t offset, int eid){
     return 1;
 }
 
-int login_employee(int userid){
+int login_employee(int eid){
     struct Employee emp;
     off_t offset;
-    offset = read_employee(&emp, userid);
+    offset = read_employee(&emp, eid);
     if(offset == -1){
             perror(USER_NOT_FOUND);
             return -1;
@@ -149,8 +149,17 @@ int login_employee(int userid){
         return -1;
     }
 
+    int check;
+    check = check_password(emp.password);
+
+    if(check == -1){
+        printf(INVALID_CREDENTIALS);
+        return -1;
+    }
+    
+    
     emp.loggedin = true;
-    if(modify_employee(emp, offset, userid) == -1){
+    if(modify_employee(emp, offset, eid) == -1){
         printf(UNABLE_TO_LOGIN);
         return -1;
     }
@@ -159,6 +168,7 @@ int login_employee(int userid){
     return 1;
 
 }
+
 
 int logout_employee(int userid){
     struct Employee emp;
@@ -208,5 +218,44 @@ int read_feedback(){
 
 }
 
+int list_employees(){
+    int fd;
+    struct Employee emp;
+    ssize_t bytes_read;
 
+    if ((fd = open(EMPLOYEE_DB, O_RDONLY)) < 0) {
+        perror("Error opening the file");
+        return -1; // Return an empty struct
+    }
+    char employees[BUFFER_SIZE];
+    char eid[12];
+    int count = 0;
+    while ((bytes_read = read(fd, &emp, sizeof(struct Employee))) > 0){
+        //printf("%s %d", temp_cust.name, temp_cust.cid);
+        if (emp.manager == false) {
+            
+            if (count > 0) {
+                strcat(employees, ", "); // Add a comma if it's not the first number
+            }
+            count += 1;
+            snprintf(eid, sizeof(eid), "%d", emp.eid); // Convert number to string
+            strcat(employees, eid);
+            // Return the found customer
+        }
+    }
+
+    if(count == 0){
+        return -1;
+    }
+    if (bytes_read < 0) {
+        perror("Could not read");
+        close(fd); 
+        return -1;
+    }
+
+    printf("%s\n", employees);
+
+    close(fd);
+    return 1; // Return an empty struct if not found
+}
 #endif

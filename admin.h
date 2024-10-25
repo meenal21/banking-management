@@ -85,6 +85,14 @@ int login_admin(){
         return -1;
     }
 
+    int check;
+    check = check_password(admin.password);
+
+    if(check == -1){
+        printf(INVALID_CREDENTIALS);
+        return -1;
+    }
+
     admin.loggedin = true;
     if(modify_admin(admin) == -1){
         printf(UNABLE_TO_LOGIN);
@@ -95,6 +103,7 @@ int login_admin(){
     return 1;
 
 }
+
 
 int logout_admin(){
     struct Admin admin;

@@ -35,6 +35,7 @@
 #define USER_DEACTIVATED "!!!----- User deactivated -----!!!"
 #define UNABLE_TO_ACTIVATE "!!!----- Unable to activate the user ----- !!!"
 #define UNABLE_TO_DEACTIVATE "!!!----- Unable to deactivate the user ----- !!!"
+#define INVALID_CREDENTIALS "!!!----- Unable to login! Invalid credentials! -----!!!"
 
 
 

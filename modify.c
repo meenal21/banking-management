@@ -1,7 +1,15 @@
 #include "commonheader.h"
-#include "customer.h"
 #include "placeholder.h"
+#include "getcounter.h"
+#include "common_functions.h"
+#include "customer.h"
 #include "employee.h"
+#include "loan_struct.h"
+#include "loan.h"
+#include "manager.h"
+#include "admin.h"
+
+//show loans ka list:
 
 
 
@@ -10,16 +18,24 @@
 
 
 int main(){
-    struct Customer cust;
-    off_t offset;
-    offset = read_customer(&cust, 2);
-    if(offset == -1){
-            perror("Couldnt find the customer in the database!");
-            return -1;
-    }
+
+    //printf("%d\n", make_manager(3));
+    //printf("%d \n",login_admin());
+    //printf("%d\n", get_count(LOAN_COUNTER));
+    //printf("%d\n", random_number(MANAGER_COUNTER));
+    //printf("%d\n", get_random_manager());
     
-    char *name = "Meenakshi";
-    strcpy(cust.name, name);
+    //struct Customer cust;
+    //printf("%ld \n", read_customer(&cust,2));
+    //printf("%d\n", create_loan(cust));
+    //login_customer(1);
+    //login_employee_chk(3);
+    //list_loan_manager(2);
+    //list_employees();
+   
+    //assign_loans(2);
     
-    modify_customer(cust, offset, 2);
+    struct Loan loan;
+    read_loan(&loan, 2);
+    printf("%d \n", loan.amount);
 }

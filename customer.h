@@ -6,6 +6,7 @@
 #include "./placeholder.h"
 #include "./getcounter.h"
 #include "feedback_struct.h"
+#include "common_functions.h"
 
 int create_customer(){
     int fd;
@@ -13,7 +14,7 @@ int create_customer(){
     struct Customer cust;
     char buffer[BUFFER_SIZE];
     char message[BUFFER_SIZE];
-    char const *filename = "customer.txt";
+    char const *filename = CUSTOMER_DB;
     
     //ssize_t bytes_read;
     ssize_t bytes_writ;
@@ -24,7 +25,7 @@ int create_customer(){
     }
 
     
-    id = getcounter("cid.txt", "Customer");
+    id = getcounter(CUSTOMER_COUNTER, "Customer");
     if(id < 0){
         perror("Customer Id couldn't be added");
     }
@@ -92,7 +93,7 @@ off_t read_customer(struct Customer * cust, int cid) {
     struct Customer temp_cust;
     ssize_t bytes_read;
 
-    if ((fd = open("customer.txt", O_RDONLY)) < 0) {
+    if ((fd = open(CUSTOMER_DB, O_RDONLY)) < 0) {
         perror("Error opening the file");
         return -1; // Return an empty struct
     }
@@ -126,21 +127,25 @@ int modify_customer(struct Customer cust, off_t offset, int cid){
 
     if(lseek(fd, offset, SEEK_SET) < 0) {
         perror(LSEEK_FAILED);
+        close(fd);
         return -1;
     }
     
     bytes_writ = write(fd, &cust, sizeof(struct Customer));
     if(bytes_writ < 0){
         perror(MODIFY_FAILED);
+        close(fd);
         return -1;
     }
+    close(fd);
     return 1;
 }
 
-int login_customer(int userid){
+int login_customer(int cid){
     struct Customer cust;
     off_t offset;
-    offset = read_customer(&cust, userid);
+    char message[BUFFER_SIZE];
+    offset = read_customer(&cust, cid);
     if(offset == -1){
             perror(USER_NOT_FOUND);
             return -1;
@@ -156,17 +161,28 @@ int login_customer(int userid){
         printf(USER_ALREADY_LOGGED_IN);
         return -1;
     }
+    // remove this line later
 
+    int check;
+    check = check_password(cust.password);
+    
+
+    if(check == -1){
+        printf(INVALID_CREDENTIALS);
+        return -1;
+    }
+    
     cust.loggedin = true;
-    if(modify_customer(cust, offset, userid) == -1){
+    if(modify_customer(cust, offset, cid) == -1){
         printf(UNABLE_TO_LOGIN);
         return -1;
     }
-
+    
     printf("Logged in!");
     return 1;
 
 }
+
 
 int logout_customer(int userid){
     struct Customer cust;

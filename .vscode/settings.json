@@ -4,6 +4,14 @@
         "commonheader.h": "c",
         "employee_struct.h": "c",
         "placeholder.h": "c",
-        "admin.h": "c"
-    }
+        "admin.h": "c",
+        "common_functions.h": "c",
+        "getcounter.h": "c",
+        "loan.h": "c",
+        "customer.h": "c",
+        "employee.h": "c",
+        "loan_struct.h": "c",
+        "manager.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

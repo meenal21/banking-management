@@ -10,5 +10,6 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #endif 

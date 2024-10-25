@@ -1,8 +1,10 @@
-#ifndef MANaGER_H
+#ifndef MANAGER_H
 #define MANAGER_H
 
 #include "commonheader.h"
 #include "employee.h"
+#include "common_functions.h"
+
 
 
 int make_manager(int eid) {
@@ -25,24 +27,41 @@ int make_manager(int eid) {
         return -1;
     }
 
-    get_counter(MANAGER_COUNTER, "Manager");
+    getcounter(MANAGER_COUNTER, "Manager");
 
     return 1; 
 }
 
-int get_count(){
+
+int get_random_manager(){
     int fd;
     int id;
-    const char *file = MANAGER_COUNTER;
-    ssize_t bytes_count;
+    const char* file = EMPLOYEE_DB;
+    struct Employee emp;
+    int count = 0;
+
+    ssize_t bytes_read;
     
-    fd = open(file, O_RDONLY, 0777);
+    fd = open(file, O_RDWR , 0777);
     if(fd < 0){
         perror("Error opening file");
         return -1;
     }
-
-    bytes_count= read(fd, &id, sizeof(int));
-    return id;
+    int ran = random_number(MANAGER_COUNTER);
+    while ((bytes_read = read(fd, &emp, sizeof(struct Employee))) > 0){
+        //printf("%s %d", temp_cust.name, temp_cust.cid);
+        
+        if (emp.manager == true) {
+            count += 1;
+            if(count == ran){
+                close(fd);
+                return emp.eid;
+            }
+            
+        }
+    }
+    close(fd);
+    return -1;
 }
+
 #endif
