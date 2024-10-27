@@ -2,7 +2,7 @@
 #define COMMON_FUNCTIONS_H
 
 #include "commonheader.h"
-#include "readwrite.h"
+#include "sendrecv.h"
 
 int get_count(const char *file){
     int fd;
@@ -35,8 +35,8 @@ int check_password(int sfd, char *pass){
     char message[BUFFER_SIZE];
     char *stri = LOGIN_PASSWORD;
 
-    readwrite(sfd, sizeof(LOGIN_PASSWORD), LOGIN_PASSWORD, BUFFER_SIZE, message);
-    // fgets(message, BUFFER_SIZE, stdin);
+    //readwrite(sfd, sizeof(LOGIN_PASSWORD), LOGIN_PASSWORD, BUFFER_SIZE, message);
+    fgets(message, BUFFER_SIZE, stdin);
     message[strcspn(message, "\n")] = 0;
     pass[strcspn(pass, "\n")] = 0;
 

@@ -15,6 +15,7 @@
 
 
 #define ERROR_WRITING_TO_CLIENT "\n!!!----- Error writing to the client* -----!!!\n"
+#define ERROR_READING_FROM_CLIENT "\n!!!----- Error reading from the client* -----!!!\n"
 #define NO_DATA_RECEIVED "\n!!! ----- No Data Received from the client* -----!!!\n"
 #define OPENING_CUSTOMER_FAILED "\n!!!----- Unable to open the customer database* -----!!!\n"
 #define OPENING_TRANSACTION_FAILED "\n!!!----- Unable to open the transaction database* -----!!!\n"

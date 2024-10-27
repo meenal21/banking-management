@@ -1,9 +1,7 @@
 #include "commonheader.h"
-#include <strings.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 #include "placeholder.h"
-#include "readwrite.h"
+//#include "readwrite.h"
+//#include "sendrecv.h"
 #include "common_functions.h"
 #include "admin.h"
 
@@ -14,7 +12,8 @@ void connection_handler(int connection_fd){
 	while(1){
 				
 				char read_buf[BUFFER_SIZE];
-				if(readwrite(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)){
+				//readwrite(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)
+				if(sendrecv(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)){
 					int choice;
 					choice = atoi(read_buf);
 					printf("%d \n",choice);
@@ -26,7 +25,7 @@ void connection_handler(int connection_fd){
 								break;
 						case 3: printf("Manager \n");
 								break;
-						case 4: write_client(connection_fd, sizeof("Admin *"), "Admin *");
+						case 4: //write_client(connection_fd, sizeof("Admin *"), "Admin *");
 								if(login_admin(connection_fd) == 1){
 									printf("Admin  inside\n");		
 								}
@@ -95,7 +94,6 @@ int main() {
 		if((childpid = fork())==0){
 			//Child Process
 			close(server_fd);
-
 			
 			//communication with the client - infinite loop here
 			connection_handler(new_socket);
@@ -103,7 +101,6 @@ int main() {
 			close(new_socket);
 			exit(0);
 		}
-
 		close(new_socket);
 	}
 

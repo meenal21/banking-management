@@ -82,7 +82,7 @@ int login_admin(int sfd){
 
     // check if logged in
     if(admin.loggedin != false){
-        write_client(sfd, sizeof(USER_ALREADY_LOGGED_IN), USER_ALREADY_LOGGED_IN);
+        //write_client(sfd, sizeof(USER_ALREADY_LOGGED_IN), USER_ALREADY_LOGGED_IN);
         printf(USER_ALREADY_LOGGED_IN);
         return -1;
     }
@@ -91,19 +91,19 @@ int login_admin(int sfd){
     check = check_password(sfd,admin.password);
 
     if(check == -1){
-        write_client(sfd, sizeof(INVALID_CREDENTIALS), INVALID_CREDENTIALS);
+        //write_client(sfd, sizeof(INVALID_CREDENTIALS), INVALID_CREDENTIALS);
         printf(INVALID_CREDENTIALS);
         return -1;
     }
 
     admin.loggedin = true;
     if(modify_admin(admin) == -1){
-        write_client(sfd, sizeof(UNABLE_TO_LOGIN), UNABLE_TO_LOGIN);
+        //write_client(sfd, sizeof(UNABLE_TO_LOGIN), UNABLE_TO_LOGIN);
         printf(UNABLE_TO_LOGIN);
         return -1;
     }
 
-    write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_IN), SUCCESSFULLY_LOGGED_IN);
+    //write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_IN), SUCCESSFULLY_LOGGED_IN);
     printf(SUCCESSFULLY_LOGGED_IN);
     return 1;
 
@@ -117,7 +117,7 @@ int logout_admin(int sfd){
     
     offset = read_admin(&admin);
     if(offset == -1){
-            write_client(sfd, sizeof(USER_NOT_FOUND), USER_NOT_FOUND);
+            //write_client(sfd, sizeof(USER_NOT_FOUND), USER_NOT_FOUND);
             printf(USER_NOT_FOUND);
             return -1;
     }
@@ -126,12 +126,12 @@ int logout_admin(int sfd){
 
     admin.loggedin = false;
     if(modify_admin(admin) == -1){
-        write_client(sfd, sizeof(UNABLE_TO_LOGOUT), UNABLE_TO_LOGOUT);
+        //write_client(sfd, sizeof(UNABLE_TO_LOGOUT), UNABLE_TO_LOGOUT);
         printf(UNABLE_TO_LOGOUT);
         return -1;
     }
 
-    write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_OUT), SUCCESSFULLY_LOGGED_OUT);
+    //write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_OUT), SUCCESSFULLY_LOGGED_OUT);
     printf(SUCCESSFULLY_LOGGED_OUT);
     return 1;
 
