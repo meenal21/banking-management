@@ -40,10 +40,10 @@ void handle_user_input(int sock){
 	fflush(stdout);
 	fflush(stdin);
 
-	printf("Inside the handle user input! Please Please take input");	
+	//printf("Inside the handle user input! Please Please take input");	
 
 	if(fgets(buffer, BUFFER_SIZE, stdin) != NULL){
-		printf("%s Did it get anything from the fgets?", buffer);
+		//printf("%s Did it get anything from the fgets?", buffer);
 		buffer[strcspn(buffer, "\n")] = '\0';
 		
 		fflush(stdin);
@@ -53,12 +53,6 @@ void handle_user_input(int sock){
 			perror(ERROR_WRITING_TO_SERVER);
 			exit(EXIT_FAILURE);
 		}
-		else{
-			printf("sent %zd bytes \n", wBytes);
-		}
-	}
-	{
-		printf("Oh so fgets is not even reading!");
 	}
 }
 
@@ -88,7 +82,7 @@ int main(){
 		perror("Socket Creation error\n");
 		return -1;
 	}
-	printf("Socket created successfully\n");
+	//printf("Socket created successfully\n");
 
 	//Step 2: Specify the server address
 	serv_addr.sin_family = AF_INET;
@@ -105,7 +99,7 @@ int main(){
 		perror("Connecton failed\n");
 		return -1;
 	}
-	printf("Connected to the server \n");
+	//printf("Connected to the server \n");
 	fflush(stdout);
 
 	
@@ -136,7 +130,7 @@ int main(){
 
 		//check if data from stdin
 		if(FD_ISSET(STDIN_FILENO, &readfds)){
-			printf("Lol! is the control even here?");
+			//printf("Lol! is the control even here?");
 			handle_user_input(sock);
 		}
 	}

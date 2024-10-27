@@ -27,6 +27,7 @@ int sendrecv(int cfd, int sendSize, char *sendBuffer, int recvSize, char *recvBu
 
     if(recvBytes == 0){
         printf("Client closed connection! \n");
+        return 0;
     }
 }
 

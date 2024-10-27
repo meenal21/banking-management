@@ -45,7 +45,8 @@ void connection_handler(int connection_fd){
 					}
 				}
 				else{
-					printf("%s \n", read_buf);
+					// break - because - iff any error then cancel!
+					break;
 				}
 	}
 }
