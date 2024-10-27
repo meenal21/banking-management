@@ -1,15 +1,14 @@
 #include "commonheader.h"
 #include "placeholder.h"
-
+#include "stdio.h"
 #define PORT 8083
-#define BUF_SIZE 1024
 
 void handle_server_input(int sock){
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, BUFFER_SIZE);
 
 	ssize_t rBytes;
-	rBytes = recv(sock, buffer, BUFFER_SIZE - 1);
+	rBytes = recv(sock, buffer, BUFFER_SIZE - 1,0);
 	if(rBytes < 0){
 		perror("Socket reading error!");
 		exit(EXIT_FAILURE);
@@ -20,21 +19,21 @@ void handle_server_input(int sock){
 	}
 
 	buffer[rBytes] = '\0';
-	printf("%s", rBytes);
+	printf("%s",  buffer);
 	fflush(stdout);
 
 	// if * is there then only write!
-	if(strchr(buffer,"*") != NULL){
+	if(strchr(buffer,'*') != NULL){
 		return;
 	}
 }
 
-void handle_user_input(int stdin){
+void handle_user_input(int sock){
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0 , BUFFER_SIZE);
 
 	if(fgets(buffer, BUFFER_SIZE, stdin) != NULL){
-		buffer[strspn(buffer, '\n')] = '\0';
+		buffer[strcspn(buffer, "\n")] = '\0';
 	
 
 		ssize_t wBytes = send(sock, buffer, strlen(buffer),0);
@@ -63,8 +62,8 @@ ssize_t read_input(char *buffer, size_t size) {
 int main(){
 	int sock = 0;
 	struct sockaddr_in serv_addr;
-	char buffer[BUF_SIZE] = {0};
-	char message[BUF_SIZE];
+	char buffer[BUFFER_SIZE] = {0};
+	char message[BUFFER_SIZE];
 
 	//Step 1: Create a socket
 	if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
