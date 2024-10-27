@@ -16,11 +16,11 @@ void handle_server_input(int sock){
 	fflush(stdin);
 	fflush(stdout);
 	if(rBytes < 0){
-		perror("Socket reading error!");
+		printf("Socket reading error!");
 		exit(EXIT_FAILURE);
 	}
 	if(rBytes == 0){
-		perror(SERVER_CLOSED_CONNECTION);
+		printf(SERVER_CLOSED_CONNECTION);
 		exit(EXIT_FAILURE);
 	}
 
@@ -50,7 +50,7 @@ void handle_user_input(int sock){
 		fflush(stdout);
 		ssize_t wBytes = send(sock, buffer, strlen(buffer),0);
 		if(wBytes <= 0){
-			perror(ERROR_WRITING_TO_SERVER);
+			printf(ERROR_WRITING_TO_SERVER);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -79,7 +79,7 @@ int main(){
 
 	//Step 1: Create a socket
 	if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-		perror("Socket Creation error\n");
+		printf("Socket Creation error\n");
 		return -1;
 	}
 	//printf("Socket created successfully\n");
@@ -90,13 +90,13 @@ int main(){
 
 	//convert IPv4 address from text to binary 
 	if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0){
-		perror("Invalid address or Address not supported\n");
+		printf("Invalid address or Address not supported\n");
 		return -1;
 	}
 
 	//Step 3 Connect to the server
 	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
-		perror("Connecton failed\n");
+		printf("Connecton failed\n");
 		return -1;
 	}
 	//printf("Connected to the server \n");
@@ -119,7 +119,7 @@ int main(){
 		// select scans - 0 to maxfd -1 - fds - whichever is ready
 		select_status = select(maxfd, &readfds,NULL, NULL, NULL);
 		if(select_status < 0){
-			perror(SELECT_ERROR);
+			printf(SELECT_ERROR);
 			break;
 		}
 

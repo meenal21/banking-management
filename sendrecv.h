@@ -9,7 +9,7 @@ int sendrecv(int cfd, int sendSize, char *sendBuffer, int recvSize, char *recvBu
     ssize_t recvBytes, sendBytes;
     memset(recvBuffer, 0, recvSize);
 
-    printf("printing the message to be sent! %s", sendBuffer);
+    //printf("printing the message to be sent! %s", sendBuffer);
     // send call
     sendBytes = send(cfd, sendBuffer, sendSize,0);
     if(sendBytes < 0){

@@ -8,19 +8,19 @@
 #define PORT 8083
 #define BUFFER_SIZE 1024
 
-void connection_handler(int connection_fd){
+int connection_handler(int connection_fd){
 	while(1){
 				
 				char read_buf[BUFFER_SIZE];
 				int ret;
 				//readwrite(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)
 				ret = sendrecv(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf);
-				printf("%d \n", ret);
+				//printf("%d \n", ret);
 					
 				if(ret > 0){
 					int choice;
 					choice = atoi(read_buf);
-					printf("%d \n",choice);
+					//printf("%d \n",choice);
 
 					switch(choice){
 						case 1: printf("Customer \n");
@@ -40,13 +40,13 @@ void connection_handler(int connection_fd){
 								printf("Admin \n");
 								break;
 						case 5: printf("Exit \n");
-								break;
+								return 0;
 						default: printf("Invalid Choice \n");
 					}
 				}
 				else{
-					// break - because - iff any error then cancel!
-					break;
+					// break - because - iff any error then cancel
+					return 1;
 				}
 	}
 }
@@ -104,8 +104,8 @@ int main() {
 			close(server_fd);
 			
 			//communication with the client - infinite loop here
-			connection_handler(new_socket);
-
+			int ret = connection_handler(new_socket);
+			
 			close(new_socket);
 			exit(0);
 		}
