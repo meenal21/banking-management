@@ -9,7 +9,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <strings.h>
 #include <stdbool.h>
 #include <time.h>
+#include "socket_header.h"
 
 #endif 
