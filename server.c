@@ -29,7 +29,7 @@ int connection_handler(int connection_fd){
 								break;
 						case 3: printf("Manager \n");
 								break;
-						case 4: //write_client(connection_fd, sizeof("Admin *"), "Admin *");
+						case 4: send_only(connection_fd, sizeof("Admin *"), "Admin *");
 								/*
 								if(login_admin(connection_fd) == 1){
 									printf("Admin  inside\n");		
@@ -40,6 +40,7 @@ int connection_handler(int connection_fd){
 								printf("Admin \n");
 								break;
 						case 5: printf("Exit \n");
+								send_only(connection_fd, sizeof("Exiting *"), "Exiting... *");
 								return 0;
 						default: printf("Invalid Choice \n");
 					}

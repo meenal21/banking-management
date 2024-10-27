@@ -31,4 +31,21 @@ int sendrecv(int cfd, int sendSize, char *sendBuffer, int recvSize, char *recvBu
     }
 }
 
+int send_only(int cfd, int sendSize, char *sendBuffer){
+    ssize_t  sendBytes;
+    fflush(stdin);
+    fflush(stdout);
+
+    //printf("printing the message to be sent! %s", sendBuffer);
+    // send call
+    sendBytes = send(cfd, sendBuffer, sendSize,0);
+    if(sendBytes < 0){
+        printf(ERROR_WRITING_TO_CLIENT);
+        return -1;
+    }
+    if(sendBytes == 0){
+        printf("Connection Closed!");
+    }
+}
+
 #endif
