@@ -12,8 +12,12 @@ void connection_handler(int connection_fd){
 	while(1){
 				
 				char read_buf[BUFFER_SIZE];
+				int ret;
 				//readwrite(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)
-				if(sendrecv(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf)){
+				ret = sendrecv(connection_fd, sizeof(ROLES_MENU), ROLES_MENU, BUFFER_SIZE, read_buf);
+				printf("%d \n", ret);
+					
+				if(ret > 0){
 					int choice;
 					choice = atoi(read_buf);
 					printf("%d \n",choice);

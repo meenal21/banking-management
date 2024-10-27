@@ -6,9 +6,15 @@
 void handle_server_input(int sock){
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, BUFFER_SIZE);
+	
+	printf("%s", buffer);	
 
 	ssize_t rBytes;
+	fflush(stdin);
+	fflush(stdout);
 	rBytes = recv(sock, buffer, BUFFER_SIZE - 1,0);
+	fflush(stdin);
+	fflush(stdout);
 	if(rBytes < 0){
 		perror("Socket reading error!");
 		exit(EXIT_FAILURE);
@@ -30,17 +36,29 @@ void handle_server_input(int sock){
 
 void handle_user_input(int sock){
 	char buffer[BUFFER_SIZE];
-	memset(buffer, 0 , BUFFER_SIZE);
+	//memset(buffer, 0 , BUFFER_SIZE);
+	fflush(stdout);
+	fflush(stdin);
+
+	printf("Inside the handle user input! Please Please take input");	
 
 	if(fgets(buffer, BUFFER_SIZE, stdin) != NULL){
+		printf("%s Did it get anything from the fgets?", buffer);
 		buffer[strcspn(buffer, "\n")] = '\0';
-	
-
+		
+		fflush(stdin);
+		fflush(stdout);
 		ssize_t wBytes = send(sock, buffer, strlen(buffer),0);
 		if(wBytes <= 0){
 			perror(ERROR_WRITING_TO_SERVER);
 			exit(EXIT_FAILURE);
 		}
+		else{
+			printf("sent %zd bytes \n", wBytes);
+		}
+	}
+	{
+		printf("Oh so fgets is not even reading!");
 	}
 }
 
@@ -118,7 +136,8 @@ int main(){
 
 		//check if data from stdin
 		if(FD_ISSET(STDIN_FILENO, &readfds)){
-			handle_server_input(STDIN_FILENO);
+			printf("Lol! is the control even here?");
+			handle_user_input(sock);
 		}
 	}
 		
