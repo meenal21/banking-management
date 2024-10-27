@@ -69,7 +69,7 @@ int read_admin(struct Admin *admin) {
     return -1; // Return an empty struct if not found
 }
 
-int login_admin(int sfd){
+int login_admin(int cfd){
     struct Admin admin;
     off_t offset;
     
@@ -82,28 +82,28 @@ int login_admin(int sfd){
 
     // check if logged in
     if(admin.loggedin != false){
-        //write_client(sfd, sizeof(USER_ALREADY_LOGGED_IN), USER_ALREADY_LOGGED_IN);
+        send_only(cfd, sizeof(USER_ALREADY_LOGGED_IN), USER_ALREADY_LOGGED_IN);
         printf(USER_ALREADY_LOGGED_IN);
         return -1;
     }
 
     int check;
-    check = check_password(sfd,admin.password);
+    check = check_password(cfd,admin.password);
 
     if(check == -1){
-        //write_client(sfd, sizeof(INVALID_CREDENTIALS), INVALID_CREDENTIALS);
+        send_only(cfd, sizeof(INVALID_CREDENTIALS), INVALID_CREDENTIALS);
         printf(INVALID_CREDENTIALS);
         return -1;
     }
 
     admin.loggedin = true;
     if(modify_admin(admin) == -1){
-        //write_client(sfd, sizeof(UNABLE_TO_LOGIN), UNABLE_TO_LOGIN);
+        send_only(cfd, sizeof(UNABLE_TO_LOGIN), UNABLE_TO_LOGIN);
         printf(UNABLE_TO_LOGIN);
         return -1;
     }
 
-    //write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_IN), SUCCESSFULLY_LOGGED_IN);
+    send_only(cfd, sizeof(SUCCESSFULLY_LOGGED_IN), SUCCESSFULLY_LOGGED_IN);
     printf(SUCCESSFULLY_LOGGED_IN);
     return 1;
 
@@ -117,7 +117,7 @@ int logout_admin(int sfd){
     
     offset = read_admin(&admin);
     if(offset == -1){
-            //write_client(sfd, sizeof(USER_NOT_FOUND), USER_NOT_FOUND);
+            //(sfd, sizeof(USER_NOT_FOUND), USER_NOT_FOUND);
             printf(USER_NOT_FOUND);
             return -1;
     }
@@ -126,12 +126,12 @@ int logout_admin(int sfd){
 
     admin.loggedin = false;
     if(modify_admin(admin) == -1){
-        //write_client(sfd, sizeof(UNABLE_TO_LOGOUT), UNABLE_TO_LOGOUT);
+        send_only(cfd, sizeof(UNABLE_TO_LOGOUT), UNABLE_TO_LOGOUT);
         printf(UNABLE_TO_LOGOUT);
         return -1;
     }
 
-    //write_client(sfd, sizeof(SUCCESSFULLY_LOGGED_OUT), SUCCESSFULLY_LOGGED_OUT);
+    send_only(cfd, sizeof(SUCCESSFULLY_LOGGED_OUT), SUCCESSFULLY_LOGGED_OUT);
     printf(SUCCESSFULLY_LOGGED_OUT);
     return 1;
 

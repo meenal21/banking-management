@@ -30,7 +30,6 @@ int connection_handler(int connection_fd){
 						case 3: printf("Manager \n");
 								break;
 						case 4: send_only(connection_fd, sizeof("Admin *"), "Admin *");
-								/*
 								if(login_admin(connection_fd) == 1){
 									printf("Admin  inside\n");		
 								}

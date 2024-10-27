@@ -29,14 +29,14 @@ int random_number(const char *file){
     return randomNum;
 }
 
-int check_password(int sfd, char *pass){
+int check_password(int cfd, char *pass){
     
     printf("%s\n", pass);
     char message[BUFFER_SIZE];
     char *stri = LOGIN_PASSWORD;
 
-    //readwrite(sfd, sizeof(LOGIN_PASSWORD), LOGIN_PASSWORD, BUFFER_SIZE, message);
-    fgets(message, BUFFER_SIZE, stdin);
+    sendrecv(sfd, sizeof(LOGIN_PASSWORD), LOGIN_PASSWORD, BUFFER_SIZE, message);
+    //fgets(message, BUFFER_SIZE, stdin);
     message[strcspn(message, "\n")] = 0;
     pass[strcspn(pass, "\n")] = 0;
 
