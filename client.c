@@ -1,15 +1,53 @@
 #include "commonheader.h"
-#include <strings.h>
-#include <arpa/inet.h>
-#include <sys/select.h>
-#include <sys/socket.h>
+#include "placeholder.h"
 
 #define PORT 8083
 #define BUF_SIZE 1024
 
+void handle_server_input(int sock){
+	char buffer[BUFFER_SIZE];
+	memset(buffer, 0, BUFFER_SIZE);
+
+	ssize_t rBytes;
+	rBytes = recv(sock, buffer, BUFFER_SIZE - 1);
+	if(rBytes < 0){
+		perror("Socket reading error!");
+		exit(EXIT_FAILURE);
+	}
+	if(rBytes == 0){
+		perror(SERVER_CLOSED_CONNECTION);
+		exit(EXIT_FAILURE);
+	}
+
+	buffer[rBytes] = '\0';
+	printf("%s", rBytes);
+	fflush(stdout);
+
+	// if * is there then only write!
+	if(strchr(buffer,"*") != NULL){
+		return;
+	}
+}
+
+void handle_user_input(int stdin){
+	char buffer[BUFFER_SIZE];
+	memset(buffer, 0 , BUFFER_SIZE);
+
+	if(fgets(buffer, BUFFER_SIZE, stdin) != NULL){
+		buffer[strspn(buffer, '\n')] = '\0';
+	
+
+		ssize_t wBytes = send(sock, buffer, strlen(buffer),0);
+		if(wBytes <= 0){
+			perror(ERROR_WRITING_TO_SERVER);
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
 ssize_t read_input(char *buffer, size_t size) {
     printf("> ");
-    fflush(stdout);
+	fflush(stdout);
     
     if (fgets(buffer, size, stdin) != NULL) {
         size_t len = strlen(buffer);
@@ -53,96 +91,38 @@ int main(){
 	printf("Connected to the server \n");
 	fflush(stdout);
 
-	//Step 4: Communicate with the server
 	
-	// while(1) {
-	// 	fflush(stdout);
-	// 	fflush(stdin);
-	// 	// first read from the server
-	// 	int bytes_read;
-	// 	bzero(buffer,BUF_SIZE);
-	// 	bzero(message, sizeof(message));
-	// 	bytes_read = read(sock, buffer, BUF_SIZE);
-	// 	if(bytes_read <= 0){
-	// 		printf("Server has closed the connection. \n");
-	// 		break;
-	// 	}
-	// 	// buffer[bytes_read] = '\0';
-	// 	printf("%s", buffer);
-		
-	// 	if(strchr(buffer, '*')){
-	// 		// printf("\nOnly Read\n");
-	// 		continue;
-	// 	}
-		
 
-	// 	//get input from the user
-	// 	fflush(stdout);
-	// 	fgets(message, BUF_SIZE, stdin);
-	// 	message[strcspn(message, "\n")] = '\0'; // removing new line character
-	// 	//Send the message to the server
-	// 	write(sock, message, strlen(message));
-
-	// 	//check if the user has exited!
-	// 	/*
-	// 	if(strcmp(message, "exit")==0){
-	// 		printf("Disconnected from the server\n");
-	// 		break;
-	// 	}
-	// 	*/
-	// }
 	fd_set readfds;
 	int maxfd;
-	while (1) {
-		// fflush(stdout);
-		// fflush(stdin);
-		memset(buffer, 0, BUF_SIZE);
-        FD_ZERO(&readfds);
-        FD_SET(STDIN_FILENO, &readfds);  // Add stdin to set
-        FD_SET(sock, &readfds);          // Add socket to set
-        maxfd = (sock > STDIN_FILENO ? sock : STDIN_FILENO) + 1;
+	while(1){
+		memset(buffer,0, BUFFER_SIZE);
+		FD_ZERO(&readfds);  // clear read file descriptor set
+		FD_SET(STDIN_FILENO, &readfds); //add stdin to the set
+		FD_SET(sock, &readfds); // add sock to the set
 
-        // Wait for input from either socket or stdin
-        if (select(maxfd, &readfds, NULL, NULL, NULL) < 0) {
-            perror("Select error");
-            break;
-        }
+		maxfd = (sock > STDIN_FILENO ?  sock : STDIN_FILENO) + 1;
 
-        // Check for socket data (server message)
-        if (FD_ISSET(sock, &readfds)) {
-            memset(buffer, 0, BUF_SIZE);
-            ssize_t bytes = read(sock, buffer, BUF_SIZE - 1);
-            
-            if (bytes <= 0) {
-                if (bytes == 0) {
-                    printf("\nServer closed connection\n");
-                } else {
-                    perror("Read error");
-                }
-                break;
-            }
+		//get the input from stdin or sock
+		int select_status; 
+		// select scans - 0 to maxfd -1 - fds - whichever is ready
+		select_status = select(maxfd, &readfds,NULL, NULL, NULL);
+		if(select_status < 0){
+			perror(SELECT_ERROR);
+			break;
+		}
 
-            buffer[bytes] = '\0';
-            printf("%s", buffer);
-            fflush(stdout);
+		//check if there is any data from server
+		if(FD_ISSET(sock, &readfds)){
+			handle_server_input(sock);
+		}
 
-            if (strchr(buffer, '*') != NULL) {
-                continue;
-            }
-        }
-
-        if (FD_ISSET(STDIN_FILENO, &readfds)) {
-            memset(buffer, 0, BUF_SIZE);
-            if (read_input(buffer, BUF_SIZE) > 0) {
-                ssize_t bytes = write(sock, buffer, strlen(buffer));
-                if (bytes <= 0) {
-                    perror("Write error");
-                    break;
-                }
-            }
-        }
-    }
-	
+		//check if data from stdin
+		if(FD_ISSET(STDIN_FILENO, &readfds)){
+			handle_server_input(STDIN_FILENO);
+		}
+	}
+		
 	close(sock);
 	return 0;
 }

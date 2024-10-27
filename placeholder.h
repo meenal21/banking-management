@@ -15,6 +15,7 @@
 
 
 #define ERROR_WRITING_TO_CLIENT "\n!!!----- Error writing to the client* -----!!!\n"
+#define ERROR_WRITING_TO_SERVER "\n!!!----- Error writing to the server* -----!!!\n"
 #define ERROR_READING_FROM_CLIENT "\n!!!----- Error reading from the client* -----!!!\n"
 #define NO_DATA_RECEIVED "\n!!! ----- No Data Received from the client* -----!!!\n"
 #define OPENING_CUSTOMER_FAILED "\n!!!----- Unable to open the customer database* -----!!!\n"
@@ -40,7 +41,8 @@
 #define UNABLE_TO_ACTIVATE "\n!!!----- Unable to activate the user* ----- !!!\n"
 #define UNABLE_TO_DEACTIVATE "\n!!!----- Unable to deactivate the user* ----- !!!\n"
 #define INVALID_CREDENTIALS "\n!!!----- Unable to login! Invalid credentials!* -----!!!\n"
-
+#define SELECT_ERROR "\n!!!----- Select Error -----!!!\n"
+#define SERVER_CLOSED_CONNECTION "\n!!!----- Server Closed Connection -----!!!\n"
 
 
 #define EMPLOYEE_DB "employee.txt"

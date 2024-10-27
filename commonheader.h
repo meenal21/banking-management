@@ -12,6 +12,7 @@
 #include <strings.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sys/select.h>
 #include "socket_header.h"
 
 #endif 

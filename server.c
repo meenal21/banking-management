@@ -26,11 +26,14 @@ void connection_handler(int connection_fd){
 						case 3: printf("Manager \n");
 								break;
 						case 4: //write_client(connection_fd, sizeof("Admin *"), "Admin *");
+								/*
 								if(login_admin(connection_fd) == 1){
 									printf("Admin  inside\n");		
 								}
 								logout_admin(connection_fd);
 								//admin_controller(connection_fd);
+								*/
+								printf("Admin \n");
 								break;
 						case 5: printf("Exit \n");
 								break;
